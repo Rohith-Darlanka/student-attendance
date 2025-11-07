@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Attendance</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 50px 40px;
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        .icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 32px;
+            color: #1f2937;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 16px;
+            color: #6b7280;
+            margin-bottom: 40px;
+        }
+
+        .input-container {
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+            text-align: left;
+            font-size: 15px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 10px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 18px;
+            font-size: 20px;
+            border: 3px solid #e5e7eb;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: 600;
+            text-transform: uppercase;
+            transition: all 0.3s;
+            outline: none;
+        }
+
+        input[type="text"]:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+
+        .help-text {
+            font-size: 13px;
+            color: #9ca3af;
+            margin-top: 8px;
+        }
+
+        button {
+            width: 100%;
+            padding: 18px;
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .message-box {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 12px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .success {
+            background: #dcfce7;
+            border: 2px solid #86efac;
+        }
+
+        .success .icon-box {
+            font-size: 50px;
+            margin-bottom: 10px;
+        }
+
+        .success h2 {
+            color: #166534;
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+
+        .success p {
+            color: #166534;
+            font-size: 15px;
+        }
+
+        .error {
+            background: #fee2e2;
+            border: 2px solid #fca5a5;
+        }
+
+        .error .icon-box {
+            font-size: 50px;
+            margin-bottom: 10px;
+        }
+
+        .error h2 {
+            color: #991b1b;
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .error p {
+            color: #991b1b;
+            font-size: 14px;
+        }
+
+        .session-list {
+            margin-top: 15px;
+            text-align: left;
+        }
+
+        .session-item {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border-left: 4px solid #166534;
+        }
+
+        .session-item.already {
+            border-left-color: #f59e0b;
+            background: #fffbeb;
+        }
+
+        .session-name {
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .session-detail {
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .reset-button {
+            margin-top: 15px;
+            background: #059669;
+        }
+
+        .reset-button:hover {
+            background: #047857;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 40px 25px;
+            }
+
+            h1 {
+                font-size: 26px;
+            }
+
+            input[type="text"] {
+                font-size: 18px;
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icon">✓</div>
+        <h1>Mark Attendance</h1>
+        <p class="subtitle">Enter your roll number to mark attendance</p>
+
+        <form id="attendanceForm">
+            <div class="input-container">
+                <label for="rollNumber">Roll Number</label>
+                <input 
+                    type="text" 
+                    id="rollNumber" 
+                    placeholder="e.g., S001" 
+                    autocomplete="off"
+                    required
+                    autofocus
+                />
+                <p class="help-text">Enter your roll number and press Enter</p>
+            </div>
+
+            <button type="submit" id="submitBtn">
+                <span id="btnText">Mark Attendance</span>
+                <span id="btnLoader" class="loading" style="display: none;"></span>
+            </button>
+        </form>
+
+        <div id="messageBox"></div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'https://attend-backend-krgx.onrender.com/api';
+        
+        const form = document.getElementById('attendanceForm');
+        const rollNumberInput = document.getElementById('rollNumber');
+        const submitBtn = document.getElementById('submitBtn');
+        const btnText = document.getElementById('btnText');
+        const btnLoader = document.getElementById('btnLoader');
+        const messageBox = document.getElementById('messageBox');
+
+        // Convert to uppercase as user types
+        rollNumberInput.addEventListener('input', (e) => {
+            e.target.value = e.target.value.toUpperCase();
+        });
+
+        // Handle form submission
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const rollNumber = rollNumberInput.value.trim();
+            
+            if (!rollNumber) {
+                showError('Please enter your roll number');
+                return;
+            }
+
+            await markAttendance(rollNumber);
+        });
+
+        async function markAttendance(rollNumber) {
+            // Show loading state
+            submitBtn.disabled = true;
+            btnText.style.display = 'none';
+            btnLoader.style.display = 'inline-block';
+            messageBox.innerHTML = '';
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/attendance/mark/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ roll_number: rollNumber })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showSuccess(data);
+                } else {
+                    showError(data.error || 'Failed to mark attendance');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showError('Network error. Please check if the backend is running.');
+            } finally {
+                // Reset button state
+                submitBtn.disabled = false;
+                btnText.style.display = 'inline';
+                btnLoader.style.display = 'none';
+            }
+        }
+
+        function showSuccess(data) {
+            let sessionsHtml = '';
+            
+            if (data.marked_sessions && data.marked_sessions.length > 0) {
+                sessionsHtml = '<div class="session-list">';
+                data.marked_sessions.forEach(session => {
+                    const isAlready = session.status === 'already_marked';
+                    sessionsHtml += `
+                        <div class="session-item ${isAlready ? 'already' : ''}">
+                            <div class="session-name">📚 ${session.course_name}</div>
+                            <div class="session-detail">Session #${session.session_id}</div>
+                            <div class="session-detail">${session.message}</div>
+                        </div>
+                    `;
+                });
+                sessionsHtml += '</div>';
+            }
+
+            messageBox.innerHTML = `
+                <div class="message-box success">
+                    <div class="icon-box">✓</div>
+                    <h2>Attendance Marked!</h2>
+                    <p>Roll Number: <strong>${data.roll_number}</strong></p>
+                    ${sessionsHtml}
+                    <button class="reset-button" onclick="resetForm()">Mark Another</button>
+                </div>
+            `;
+        }
+
+        function showError(errorMessage) {
+            messageBox.innerHTML = `
+                <div class="message-box error">
+                    <div class="icon-box">✗</div>
+                    <h2>Unable to Mark Attendance</h2>
+                    <p>${errorMessage}</p>
+                    <button class="reset-button" style="background: #dc2626;" onclick="resetForm()">Try Again</button>
+                </div>
+            `;
+        }
+
+        function resetForm() {
+            messageBox.innerHTML = '';
+            rollNumberInput.value = '';
+            rollNumberInput.focus();
+        }
+
+        // Focus input on page load
+        window.addEventListener('load', () => {
+            rollNumberInput.focus();
+        });
+    </script>
+</body>
+</html>
